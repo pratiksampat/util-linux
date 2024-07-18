@@ -311,6 +311,8 @@ int lscpu_cpu_set_type(struct lscpu_cpu *cpu, struct lscpu_cputype *type);
 int lscpu_create_cpus(struct lscpu_cxt *cxt, cpu_set_t *cpuset, size_t setsize);
 struct lscpu_cpu *lscpu_cpus_loopup_by_type(struct lscpu_cxt *cxt, struct lscpu_cputype *ct);
 
+int is_cluster_x86(struct lscpu_cxt *cxt);
+int is_cluster_arm(struct lscpu_cxt *cxt);
 void lscpu_decode_arm(struct lscpu_cxt *cxt);
 
 int lookup(char *line, char *pattern, char **value);
@@ -344,5 +346,5 @@ void to_dmi_header(struct lscpu_dmi_header *h, uint8_t *data);
 char *dmi_string(const struct lscpu_dmi_header *dm, uint8_t s);
 int parse_dmi_table(uint16_t len, uint16_t num, uint8_t *data, struct dmi_info *di);
 size_t get_number_of_physical_sockets_from_dmi(void);
-int dmi_decode_cputype(struct lscpu_cputype *);
+int dmi_decode_cputype(struct lscpu_cxt *, struct lscpu_cputype *);
 #endif /* LSCPU_H */

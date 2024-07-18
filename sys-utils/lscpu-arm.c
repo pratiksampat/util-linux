@@ -415,7 +415,7 @@ static int arm_rXpY_decode(struct lscpu_cputype *ct)
 static void arm_decode(struct lscpu_cxt *cxt, struct lscpu_cputype *ct)
 {
 	if (!cxt->noalive && access(_PATH_SYS_DMI, R_OK) == 0)
-		dmi_decode_cputype(ct);
+		dmi_decode_cputype(cxt, ct);
 
 	arm_ids_decode(ct);
 	arm_rXpY_decode(ct);
@@ -424,7 +424,7 @@ static void arm_decode(struct lscpu_cxt *cxt, struct lscpu_cputype *ct)
 		ct->nr_socket_on_cluster = get_number_of_physical_sockets_from_dmi();
 }
 
-static int is_cluster_arm(struct lscpu_cxt *cxt)
+int is_cluster_arm(struct lscpu_cxt *cxt)
 {
 	struct stat st;
 

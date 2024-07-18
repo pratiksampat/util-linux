@@ -97,7 +97,7 @@ done:
 	return rc;
 }
 
-int dmi_decode_cputype(struct lscpu_cputype *ct)
+int dmi_decode_cputype(struct lscpu_cxt *cxt, struct lscpu_cputype *ct)
 {
 	static char const sys_fw_dmi_tables[] = _PATH_SYS_DMI;
 	struct dmi_info di = { };
@@ -121,6 +121,9 @@ int dmi_decode_cputype(struct lscpu_cputype *ct)
 
 	if (di.processor_manufacturer)
 		ct->bios_vendor = xstrdup(di.processor_manufacturer);
+
+	if (is_cluster_x86(cxt) && strcmp(di.part_num, "Unknown") == 0)
+		di.part_num = "";
 
 	snprintf(buf, sizeof(buf), "%s %s CPU @ %d.%dGHz",
 			(di.processor_version ?: ""), (di.part_num ?: ""),

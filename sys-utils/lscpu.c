@@ -178,6 +178,11 @@ static void lscpu_init_debug(void)
 	__UL_INIT_DEBUG_FROM_ENV(lscpu, LSCPU_DEBUG_, 0, LSCPU_DEBUG);
 }
 
+int is_cluster_x86(struct lscpu_cxt *cxt)
+{
+	return strcmp(cxt->arch->name, "x86_64") == 0;
+}
+
 static int
 cpu_column_name_to_id(const char *name, size_t namesz)
 {
@@ -1203,6 +1208,18 @@ static void __attribute__((__noreturn__)) usage(void)
 	exit(EXIT_SUCCESS);
 }
 
+static void lscpu_decode(struct lscpu_cxt *cxt)
+{
+	size_t i;
+
+	if (is_cluster_x86(cxt)) {
+		for (i = 0; i < cxt->ncputypes; i++)
+			dmi_decode_cputype(cxt, cxt->cputypes[i]);
+	} else if (is_cluster_arm(cxt)) {
+		lscpu_decode_arm(cxt);
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	struct lscpu_cxt *cxt;
@@ -1365,7 +1382,7 @@ int main(int argc, char *argv[])
 	lscpu_read_numas(cxt);
 	lscpu_read_topology(cxt);
 
-	lscpu_decode_arm(cxt);
+	lscpu_decode(cxt);
 
 	cxt->virt = lscpu_read_virtualization(cxt);
 
